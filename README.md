@@ -1,0 +1,1 @@
+A wheatstone bridge circuit board using the RTD resistor is constructed to measure temperature. This circuit is later used to measure the melting point of water and sugar water to determine the difference of the temperature of melting points. 
