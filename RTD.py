@@ -1,11 +1,12 @@
-import pyfirmata
-import time
-from jupyterplot import ProgressPlot
-board = pyfirmata.Arduino('COM3')
+import pyfirmata #import pyfirmata to translate python code to Arduino 
+import time #import time function
+from jupyterplot import ProgressPlot #import plotting graphs
+board = pyfirmata.Arduino('COM3') #indicate COM port
 
 it = pyfirmata.util.Iterator(board)
 it.start()
 
+#enable reporting 
 board.analog[0].enable_reporting()
 board.analog[1].enable_reporting()
 
@@ -16,21 +17,21 @@ Vadc = 5
 Tref = 0
 Rref = 1009
 alpha = 0.00385
-
 pp = ProgressPlot(plot_names = ['RTD temperature, Tu (°C)'], line_names = ['Tu'], line_colors = ['blue'], x_label = 'time (s)', x_iterator = False)
 t= 0
 
+#while loop to run the circuit
 while True:
   #obtain readings and do the calculations
     Vu = Vi - board.analog[0].read() * Vadc
     Vc = Vi - board.analog[1].read()*Vadc
     V0 = Vu - Vc
-    Ru = (V0/Vi + Rc/(Rc+R2)/(1-(V0/Vi+Rc/(Rc+R2))))*R3
+    Ru = (V0/Vi + Rc/(Rc+R2)/(1-(V0/Vi+Rc/(Rc+R2))))*R3 #formula to calculate resistance
     Ru=round(Ru,2)
     print(Ru)
-    Tu=((Ru/Rref-1)/alpha)+Tref
+    Tu=((Ru/Rref-1)/alpha)+Tref #convert resistance to temperature
     Tu=round(Tu,2)
-    time.sleep(60)
+    time.sleep(60) #one period is 60 seconds
     t=t+1
     pp.update(t,Tu)
     lines=[str(t),str(Tu)]
@@ -39,4 +40,4 @@ while True:
         output_line = '\t'.join(lines) + '\n'
         f.writelines(output_line)
     if t == 360:
-        break
+        break #end loop after 6 hours 
