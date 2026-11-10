@@ -23,7 +23,7 @@ t= 0
 #while loop to run the circuit
 while True:
   #obtain readings and do the calculations
-    Vu = Vi - board.analog[0].read() * Vadc
+    Vu = Vi - board.analog[0].read() * Vadc #convert read voltage to 0-5V scale
     Vc = Vi - board.analog[1].read()*Vadc
     V0 = Vu - Vc
     Ru = (V0/Vi + Rc/(Rc+R2)/(1-(V0/Vi+Rc/(Rc+R2))))*R3 #formula to calculate resistance
@@ -33,11 +33,13 @@ while True:
     Tu=round(Tu,2)
     time.sleep(60) #one period is 60 seconds
     t=t+1
+  #graph data out
     pp.update(t,Tu)
     lines=[str(t),str(Tu)]
     print(str(t), str(Tu))
+  
     with open ('Trial5water.txt','a') as f:
         output_line = '\t'.join(lines) + '\n'
-        f.writelines(output_line)
+        f.writelines(output_line) #creates file to record data
     if t == 360:
         break #end loop after 6 hours 
